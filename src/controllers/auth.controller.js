@@ -1,6 +1,7 @@
 const express = require('express');
 const UserModel = require('../models/user.model');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 
 
@@ -14,7 +15,10 @@ async function registerController(req, res) {
         return res.status(400).json({ message: "User already exists" })
     }
 
-    const user = await UserModel.create({ username, password });
+    const user = await UserModel.create({ username, 
+        password : bcrypt.hashSync(password,10)
+
+     });
     const token = jwt.sign( { userId: user._id }, process.env.jwt_secret)
     res.cookie("token", token);
 
@@ -31,7 +35,7 @@ async function loginController(req, res) {
         return res.status(400).json({ message: "User not found" });
     }
 
-    const isPasswordIsValid = user.password === password;
+    const isPasswordIsValid = await bcrypt.compareSync(password, user.password);
 
     if (!isPasswordIsValid) {
         return res.status(400).json({ message: "Invalid Password" });
