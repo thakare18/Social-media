@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 
 
 
+
 async function registerController(req, res) {
     const { username, password } = req.body;
 
