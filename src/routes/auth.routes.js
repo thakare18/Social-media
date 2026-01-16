@@ -3,7 +3,6 @@ const {registerController, loginController} = require('../controllers/auth.contr
 
 
 
-
 const router = express.Router();
 
 
