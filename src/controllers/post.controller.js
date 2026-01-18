@@ -1,20 +1,8 @@
-const express = require('express');
-const jwt = require('jsonwebtoken');
-const router = express.Router();
-const authMiddleware = require('../middlewares/auth.middleware');
-const multer = require('multer');
-// const userModel = require('../models/user.model');
-// const cookieParser = require('cookie-parser');
+const postModel = require('../models/post.model');
 
 
 
-const storage = multer.memoryStorage();
+async function createPostController(req,res){
+    const file = req.file;// multer file
 
-
-router.post('/',
-    authMiddleware,
-    upload.single('image'),
-    createPostController
-);
-
-module.exports = router;
+}
