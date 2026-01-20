@@ -1,28 +1,21 @@
-const { GoogleGenAI } = require("@google/genai");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-const ai = new GoogleGenAI({});
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-async function generateCaption(base64ImageFile) {
-  const contents = [
+async function generateCaption(base64ImageFile, mimeType = "image/jpeg") {
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+  const result = await model.generateContent([
     {
       inlineData: {
-        mimeType: "image/jpeg",
         data: base64ImageFile,
+        mimeType,
       },
     },
-    { text: "generate Caption this image." },
-  ];
+    "Generate a short creative caption under 10 words with emojis and hashtags.",
+  ]);
 
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: contents,
-    config: {
-      systemInstruction: `generate short caption for this image,
-          be creative and do not use more than 10 words.
-          `,
-    },
-  });
-  return response.text;
+  return result.response.text();
 }
 
-module.exports = generateCaption;
+module.exports = { generateCaption };
