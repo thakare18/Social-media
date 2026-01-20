@@ -6,6 +6,7 @@ const authMiddleware = require('../middlewares/auth.middleware');
 const multer = require('multer');
 const { createPostController } = require('../controllers/post.controller');
 
+
 // post /api/posts/ {protected route}// protected route need token 
 
 const upload = multer({ storage: multer.memoryStorage() });

@@ -1,34 +1,38 @@
 const { GoogleGenAI } = require("@google/genai");
 
-const ai = new GoogleGenAI({});
+// Initialize client with API key from env
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 async function generateCaption(base64ImageFile) {
-    const contents = [
-        {
-            inlineData: {
-                mimeType: "image/jpeg",
-                data: base64ImageFile,
+    if (!process.env.GEMINI_API_KEY) {
+        throw new Error("GEMINI_API_KEY is missing");
+    }
+
+    const model = ai.models.get("gemini-2.0-flash-exp");
+
+    const result = await model.generateContent({
+        contents: [
+            {
+                role: "user",
+                parts: [
+                    {
+                        inlineData: {
+                            mimeType: "image/jpeg",
+                            data: base64ImageFile,
+                        },
+                    },
+                    {
+                        text: "You are an expert at generating captions for images. Produce one short, relevant caption with hashtags and emojis, concise and on-topic.",
+                    },
+                ],
             },
-        },
-        { text: "Caption this image." },
-    ];
-
-
-    const responce = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: contents,
-        config: {
-            systemInstruction: `You are a expert for generrating a caption for the images. 
-        You must generate a single caption for the given images.
-         Your caption should be short and concise.
-         You can use hashtags and emojis for making a more attractive caption.`
-        }
-
+        ],
     });
-    return responce.text;
+
+    return result.response.text();
 }
 
-module.export = generateCaption;
+module.exports = { generateCaption };
 
 
 
