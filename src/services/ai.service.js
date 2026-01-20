@@ -1,44 +1,28 @@
 const { GoogleGenAI } = require("@google/genai");
 
-// Initialize client with API key from env
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const ai = new GoogleGenAI({});
 
 async function generateCaption(base64ImageFile) {
-    if (!process.env.GEMINI_API_KEY) {
-        throw new Error("GEMINI_API_KEY is missing");
-    }
+  const contents = [
+    {
+      inlineData: {
+        mimeType: "image/jpeg",
+        data: base64ImageFile,
+      },
+    },
+    { text: "generate Caption this image." },
+  ];
 
-    const model = ai.models.get("gemini-2.0-flash-exp");
-
-    const result = await model.generateContent({
-        contents: [
-            {
-                role: "user",
-                parts: [
-                    {
-                        inlineData: {
-                            mimeType: "image/jpeg",
-                            data: base64ImageFile,
-                        },
-                    },
-                    {
-                        text: "You are an expert at generating captions for images. Produce one short, relevant caption with hashtags and emojis, concise and on-topic.",
-                    },
-                ],
-            },
-        ],
-    });
-
-    return result.response.text();
+  const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: contents,
+    config: {
+      systemInstruction: `generate short caption for this image,
+          be creative and do not use more than 10 words.
+          `,
+    },
+  });
+  return response.text;
 }
 
-module.exports = { generateCaption };
-
-
-
-
-
-
-
-
-
+module.exports = generateCaption;
