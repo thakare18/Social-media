@@ -167,3 +167,4 @@ Note: The frontend is currently being developed. Some features or UI components 
 
 **Prathamesh Thakare**
 GitHub: [https://github.com/thakare18](https://github.com/thakare18)
+mail : prathamthackeray18@gmail.com
